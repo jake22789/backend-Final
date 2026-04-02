@@ -115,3 +115,9 @@ C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\ru\Mic
 C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\obj\Debug\net9.0\final_proj.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\obj\Debug\net9.0\final_proj.sourcelink.json
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Microsoft.OpenApi.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
