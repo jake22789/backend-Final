@@ -1,4 +1,7 @@
 
+using final_proj.Models;
+using final_proj.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +10,12 @@ builder.Services.AddControllers();
 // Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add DbContext
+builder.Services.AddDbContext<Db26TeamoneContext>();
+
+// Add services
+builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 
 var app = builder.Build();
 
