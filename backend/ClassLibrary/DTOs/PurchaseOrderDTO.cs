@@ -1,4 +1,4 @@
-//dto for purchase order and Orderitem
+
 using System.ComponentModel.DataAnnotations;
 namespace ClassLibrary.DTOs;
 
