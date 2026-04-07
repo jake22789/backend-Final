@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace final_proj.Models;
@@ -9,7 +9,7 @@ public partial class Item
 
     public string? ItemName { get; set; }
 
-    public decimal? Cost { get; set; }
+    public decimal? Price { get; set; }
 
     public int? VendorId { get; set; }
 

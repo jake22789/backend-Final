@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,8 +42,14 @@ public partial class Db26TeamoneContext : DbContext
     public virtual DbSet<Vendor> Vendors { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=database-1.cisqkskacvfb.us-west-2.rds.amazonaws.com;Port=5432;Database=db26_teamone;Username=teamone;password=secret987654secret3210");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            // Use connection string from configuration instead of hardcoding
+            var connectionString = "Host=database-1.cisqkskacvfb.us-west-2.rds.amazonaws.com;Port=5432;Database=db26_teamone;Username=teamone;password=secret987654secret3210";
+            optionsBuilder.UseNpgsql(connectionString);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -135,15 +141,15 @@ public partial class Db26TeamoneContext : DbContext
             entity.ToTable("item", "warehouse");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Cost)
-                .HasPrecision(10, 2)
-                .HasColumnName("cost");
             entity.Property(e => e.ItemName)
                 .HasMaxLength(50)
                 .HasColumnName("item_name");
             entity.Property(e => e.ItemSize)
                 .HasPrecision(10, 2)
                 .HasColumnName("item_size");
+            entity.Property(e => e.Price)
+                .HasPrecision(10, 2)
+                .HasColumnName("price");
             entity.Property(e => e.VendorId).HasColumnName("vendor_id");
 
             entity.HasOne(d => d.Vendor).WithMany(p => p.Items)
