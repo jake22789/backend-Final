@@ -15,6 +15,8 @@ public partial class Shipment
     public decimal? PriceAdjust { get; set; }
 
     public decimal? HandlingCost { get; set; }
+
+    public string? Status { get; set; }
    
     public virtual ICollection<ItemShipment> ItemShipments { get; set; } = new List<ItemShipment>();
 

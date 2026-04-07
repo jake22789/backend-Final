@@ -258,6 +258,10 @@ public partial class Db26TeamoneContext : DbContext
                 .HasPrecision(10, 2)
                 .HasColumnName("price_adjust");
 
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasColumnName("status");
+
             entity.HasOne(d => d.Order).WithMany(p => p.Shipments)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("order_id_fk");

@@ -42,6 +42,9 @@ namespace final_proj.Services
             if (shipment.OrderId != dto.OrderId)
                 throw new ArgumentException("OrderId does not match the existing shipment.", nameof(dto.OrderId));
 
+            if (shipment.Status == "RECEIVED" || shipment.DateReceived != null)
+                throw new InvalidOperationException("Shipment has already been received.");
+
             var itemIds = dto.ItemShipments.Select(i => i.ItemId!.Value).Distinct().ToList();
             var existingItemIds = await _context.Items
                 .Where(i => itemIds.Contains(i.Id))
@@ -90,6 +93,7 @@ namespace final_proj.Services
             }
 
             shipment.DateReceived = dto.DateReceived ?? DateTime.UtcNow;
+            shipment.Status = "RECEIVED";
             shipment.PriceAdjust = dto.PriceAdjust;
             shipment.HandlingCost = dto.HandlingCost;
 
