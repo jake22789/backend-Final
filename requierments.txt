@@ -1,6 +1,6 @@
 managers
 
-add vendor
+add vendor done
 add item done
 add carriors
 proc_OrderFullfillment

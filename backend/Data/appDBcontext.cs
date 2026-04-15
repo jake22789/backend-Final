@@ -12,4 +12,5 @@ public class AppDbContext : DbContext
 
     public DbSet<Item> Items { get; set; }
     public DbSet<Vendor> Vendors {get; set;}
+    public DbSet<Customer> Customers {get; set;}
 }
