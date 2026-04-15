@@ -1,19 +1,26 @@
 
-using final_proj.Models;
+using final_proj.Data;
+using Microsoft.EntityFrameworkCore;
 using final_proj.Services;
+using final_proj.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
-builder.Services.AddScoped<IReceiveShipmentService, ReceiveShipmentService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
+
+builder.Services.AddScoped<ItemService>();
+builder.Services.AddScoped<VendorService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-builder.Services.AddDbContext<Db26TeamoneContext>();
 
 
 var app = builder.Build();

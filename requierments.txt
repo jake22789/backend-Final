@@ -1,0 +1,22 @@
+managers
+
+add vendor
+add item done
+add carriors
+proc_OrderFullfillment
+proc_purchaseOrder
+proc_receiving
+
+check inventory
+
+
+customers
+procCreateOrder
+add customer to database
+place orders
+
+
+
+
+
+

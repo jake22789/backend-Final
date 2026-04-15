@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace final_proj.Models;
+
+public partial class ItemShipment
+{
+    public int Id { get; set; }
+
+    public int? ItemId { get; set; }
+
+    public int ShipmentId { get; set; }
+
+    public int? ActionId { get; set; }
+
+    public int? Quantity { get; set; }
+
+    public decimal? UnitPrice { get; set; }
+
+    public virtual ShipmentAction? Action { get; set; }
+
+    public virtual Item1? Item { get; set; }
+
+    public virtual Shipment Shipment { get; set; } = null!;
+}
