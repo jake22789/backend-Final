@@ -1,4 +1,3 @@
-using final_proj.Data;
 using final_proj.DTO;
 using final_proj.Models;
 
@@ -6,9 +5,9 @@ namespace final_proj.Services;
 
 public class CustomerService
 {
-    private readonly AppDbContext _context;
+    private readonly Db26TeamoneContext _context;
 
-    public CustomerService(AppDbContext context)
+    public CustomerService(Db26TeamoneContext context)
     {
         _context = context;
     }

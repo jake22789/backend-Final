@@ -12,7 +12,7 @@ check inventory
 
 customers
 procCreateOrder
-add customer to database
+add customer to database done
 place orders
 
 

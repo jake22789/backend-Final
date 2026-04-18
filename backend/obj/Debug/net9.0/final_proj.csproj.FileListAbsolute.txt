@@ -121,3 +121,11 @@ C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Micros
 C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\jake9\schoolprojects\backend\final_proj\backend\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
