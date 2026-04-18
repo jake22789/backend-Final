@@ -50,8 +50,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-await AppSchemaInitializer.InitializeAsync(app.Services);
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
