@@ -1,6 +1,6 @@
 using System.Text;
 using final_proj.Services;
-using final_proj.Setup;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
