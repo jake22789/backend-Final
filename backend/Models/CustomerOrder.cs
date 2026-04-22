@@ -13,6 +13,8 @@ public partial class CustomerOrder
 
     public DateTime? Date { get; set; }
 
+    public virtual AppOrderWorkflowState? AppOrderWorkflowState { get; set; }
+
     public virtual Customer? Customer { get; set; }
 
     public virtual ICollection<CustomerOrderToItem> CustomerOrderToItems { get; set; } = new List<CustomerOrderToItem>();

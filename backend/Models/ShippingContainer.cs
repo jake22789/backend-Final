@@ -17,6 +17,8 @@ public partial class ShippingContainer
 
     public int? TypeId { get; set; }
 
+    public string? ShippingAddress { get; set; }
+
     public virtual Carrier1? Carrier { get; set; }
 
     public virtual ICollection<CustomerOrderToContainer> CustomerOrderToContainers { get; set; } = new List<CustomerOrderToContainer>();

@@ -17,6 +17,8 @@ public partial class ShippingContainer1
 
     public string? TrackingNumber { get; set; }
 
+    public string? ShippingAddress { get; set; }
+
     public virtual Carrier? Carrier { get; set; }
 
     public virtual ContainerType? ContainerTypeNavigation { get; set; }

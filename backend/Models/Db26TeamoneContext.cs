@@ -19,6 +19,10 @@ public partial class Db26TeamoneContext : DbContext
 
     public virtual DbSet<Aisle1> Aisles1 { get; set; }
 
+    public virtual DbSet<AppOrderWorkflowState> AppOrderWorkflowStates { get; set; }
+
+    public virtual DbSet<AppUser> AppUsers { get; set; }
+
     public virtual DbSet<Bay> Bays { get; set; }
 
     public virtual DbSet<Bay1> Bays1 { get; set; }
@@ -65,15 +69,43 @@ public partial class Db26TeamoneContext : DbContext
 
     public virtual DbSet<Heberb> Heberbs { get; set; }
 
+    public virtual DbSet<InventoryOnHand> InventoryOnHands { get; set; }
+
     public virtual DbSet<Item> Items { get; set; }
 
     public virtual DbSet<Item1> Items1 { get; set; }
+
+    public virtual DbSet<ItemInventoryView> ItemInventoryViews { get; set; }
 
     public virtual DbSet<ItemShipment> ItemShipments { get; set; }
 
     public virtual DbSet<ItemShipment1> ItemShipments1 { get; set; }
 
+    public virtual DbSet<ItemsNeedingToBeShipped> ItemsNeedingToBeShippeds { get; set; }
+
+    public virtual DbSet<ItemsNeedingToBeShipped1> ItemsNeedingToBeShippeds1 { get; set; }
+
+    public virtual DbSet<OrderLookupL1> OrderLookupL1s { get; set; }
+
+    public virtual DbSet<OrderLookupL11> OrderLookupL1s1 { get; set; }
+
+    public virtual DbSet<OrderLookupL2> OrderLookupL2s { get; set; }
+
+    public virtual DbSet<OrderLookupL21> OrderLookupL2s1 { get; set; }
+
+    public virtual DbSet<OrderLookupL3> OrderLookupL3s { get; set; }
+
+    public virtual DbSet<OrderLookupL31> OrderLookupL3s1 { get; set; }
+
     public virtual DbSet<OrderVolume> OrderVolumes { get; set; }
+
+    public virtual DbSet<OrdersNeedingToBeShipped> OrdersNeedingToBeShippeds { get; set; }
+
+    public virtual DbSet<OrdersNeedingToBeShipped1> OrdersNeedingToBeShippeds1 { get; set; }
+
+    public virtual DbSet<ProfitabilityPerItem> ProfitabilityPerItems { get; set; }
+
+    public virtual DbSet<ProfitabilityPerItem1> ProfitabilityPerItems1 { get; set; }
 
     public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 
@@ -105,7 +137,7 @@ public partial class Db26TeamoneContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=database-1.cisqkskacvfb.us-west-2.rds.amazonaws.com;Port=5432;Database=db26_teamone;Username=teamone;Password=secret987654secret3210");
+        => optionsBuilder.UseNpgsql("Host=database-1.cisqkskacvfb.us-west-2.rds.amazonaws.com;Port=5432;Database=db26_teamone;Username=teamone;password=secret987654secret3210");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -129,6 +161,53 @@ public partial class Db26TeamoneContext : DbContext
             entity.ToTable("aisle", "warehouse");
 
             entity.Property(e => e.Id).HasColumnName("id");
+        });
+
+        modelBuilder.Entity<AppOrderWorkflowState>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("app_order_workflow_state_pkey");
+
+            entity.ToTable("app_order_workflow_state", "warehouse");
+
+            entity.HasIndex(e => e.OrderId, "app_order_workflow_state_order_id_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasColumnName("status");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Order).WithOne(p => p.AppOrderWorkflowState)
+                .HasForeignKey<AppOrderWorkflowState>(d => d.OrderId)
+                .HasConstraintName("app_order_workflow_state_order_id_fkey");
+        });
+
+        modelBuilder.Entity<AppUser>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("app_user_pkey");
+
+            entity.ToTable("app_user", "warehouse");
+
+            entity.HasIndex(e => e.Username, "app_user_username_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.PasswordHash)
+                .HasMaxLength(300)
+                .HasColumnName("password_hash");
+            entity.Property(e => e.PasswordSalt)
+                .HasMaxLength(300)
+                .HasColumnName("password_salt");
+            entity.Property(e => e.Username)
+                .HasMaxLength(100)
+                .HasColumnName("username");
         });
 
         modelBuilder.Entity<Bay>(entity =>
@@ -279,9 +358,6 @@ public partial class Db26TeamoneContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(30)
                 .HasColumnName("name");
-            entity.Property(e => e.Rate)
-                .HasPrecision(10, 2)
-                .HasColumnName("rate");
         });
 
         modelBuilder.Entity<Carrier1>(entity =>
@@ -526,6 +602,21 @@ public partial class Db26TeamoneContext : DbContext
                 .HasConstraintName("heberb_a_id_fkey");
         });
 
+        modelBuilder.Entity<InventoryOnHand>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("inventory_on_hand", "warehouse");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ItemName)
+                .HasMaxLength(50)
+                .HasColumnName("item_name");
+            entity.Property(e => e.QtyAvailableForSale).HasColumnName("qty_available_for_sale");
+            entity.Property(e => e.QtyInWarehouse).HasColumnName("qty_in_warehouse");
+            entity.Property(e => e.QtySoldNotYetShipped).HasColumnName("qty_sold_not_yet_shipped");
+        });
+
         modelBuilder.Entity<Item>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("item_pkey");
@@ -558,6 +649,21 @@ public partial class Db26TeamoneContext : DbContext
             entity.Property(e => e.Price)
                 .HasPrecision(10, 2)
                 .HasColumnName("price");
+        });
+
+        modelBuilder.Entity<ItemInventoryView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("item_inventory_view", "warehouse");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ItemName)
+                .HasMaxLength(50)
+                .HasColumnName("item_name");
+            entity.Property(e => e.QtyAvailableForSale).HasColumnName("qty_available_for_sale");
+            entity.Property(e => e.QtyInWarehouse).HasColumnName("qty_in_warehouse");
+            entity.Property(e => e.QtySoldNotYetShipped).HasColumnName("qty_sold_not_yet_shipped");
         });
 
         modelBuilder.Entity<ItemShipment>(entity =>
@@ -617,6 +723,146 @@ public partial class Db26TeamoneContext : DbContext
                 .HasConstraintName("item_shipment_shipment_id_fkey");
         });
 
+        modelBuilder.Entity<ItemsNeedingToBeShipped>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("items_needing_to_be_shipped", "test_schema");
+
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.QtyAlreadyShipped).HasColumnName("qty_already_shipped");
+            entity.Property(e => e.QtyOrdered).HasColumnName("qty_ordered");
+            entity.Property(e => e.QtyRemainingToBeShipped).HasColumnName("qty_remaining_to_be_shipped");
+            entity.Property(e => e.QuantityInWarehouse).HasColumnName("quantity_in_warehouse");
+        });
+
+        modelBuilder.Entity<ItemsNeedingToBeShipped1>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("items_needing_to_be_shipped", "warehouse");
+
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.QtyAlreadyShipped).HasColumnName("qty_already_shipped");
+            entity.Property(e => e.QtyOrdered).HasColumnName("qty_ordered");
+            entity.Property(e => e.QtyRemainingToBeShipped).HasColumnName("qty_remaining_to_be_shipped");
+            entity.Property(e => e.QuantityInWarehouse).HasColumnName("quantity_in_warehouse");
+        });
+
+        modelBuilder.Entity<OrderLookupL1>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("order_lookup_l1", "test_schema");
+
+            entity.Property(e => e.Address).HasColumnName("address");
+            entity.Property(e => e.Date)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.TFEverythingShipped).HasColumnName("T/F Everything shipped");
+        });
+
+        modelBuilder.Entity<OrderLookupL11>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("order_lookup_l1", "warehouse");
+
+            entity.Property(e => e.Address).HasColumnName("address");
+            entity.Property(e => e.Date)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.TFEverythingShipped).HasColumnName("T/F Everything shipped");
+        });
+
+        modelBuilder.Entity<OrderLookupL2>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("order_lookup_l2", "test_schema");
+
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderId).HasColumnName("Order_Id");
+            entity.Property(e => e.QtyAlreadyShipped).HasColumnName("qty_already_shipped");
+            entity.Property(e => e.QtyInWarehouse).HasColumnName("qty_in_warehouse");
+            entity.Property(e => e.QtyOrdered).HasColumnName("qty_ordered");
+            entity.Property(e => e.QtyRemainingToBeShipped).HasColumnName("qty_remaining_to_be_shipped");
+        });
+
+        modelBuilder.Entity<OrderLookupL21>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("order_lookup_l2", "warehouse");
+
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.QtyAlreadyShipped).HasColumnName("qty_already_shipped");
+            entity.Property(e => e.QtyInWarehouse).HasColumnName("qty_in_warehouse");
+            entity.Property(e => e.QtyOrdered).HasColumnName("qty_ordered");
+            entity.Property(e => e.QtyRemainingToBeShipped).HasColumnName("qty_remaining_to_be_shipped");
+        });
+
+        modelBuilder.Entity<OrderLookupL3>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("order_lookup_l3", "test_schema");
+
+            entity.Property(e => e.BoxId).HasColumnName("box_id");
+            entity.Property(e => e.BoxTrackingId)
+                .HasMaxLength(100)
+                .HasColumnName("box_tracking_ID");
+            entity.Property(e => e.DateShipped)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date_shipped");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderId).HasColumnName("Order_ID");
+            entity.Property(e => e.QtyInBox).HasColumnName("qty_in_box");
+            entity.Property(e => e.QtyOrdered).HasColumnName("qty_ordered");
+        });
+
+        modelBuilder.Entity<OrderLookupL31>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("order_lookup_l3", "warehouse");
+
+            entity.Property(e => e.BoxId).HasColumnName("box_id");
+            entity.Property(e => e.BoxTrackingId)
+                .HasMaxLength(100)
+                .HasColumnName("box_tracking_id");
+            entity.Property(e => e.DateShipped)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date_shipped");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.QtyInBox).HasColumnName("qty_in_box");
+            entity.Property(e => e.QtyOrdered).HasColumnName("qty_ordered");
+        });
+
         modelBuilder.Entity<OrderVolume>(entity =>
         {
             entity
@@ -624,6 +870,70 @@ public partial class Db26TeamoneContext : DbContext
                 .ToTable("order_volume", "test_schema");
 
             entity.Property(e => e.Sum).HasColumnName("sum");
+        });
+
+        modelBuilder.Entity<OrdersNeedingToBeShipped>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("orders_needing_to_be_shipped", "warehouse");
+
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.QtyAlreadyShipped).HasColumnName("qty_already_shipped");
+            entity.Property(e => e.QtyOrdered).HasColumnName("qty_ordered");
+            entity.Property(e => e.QtyRemainingToBeShipped).HasColumnName("qty_remaining_to_be_shipped");
+        });
+
+        modelBuilder.Entity<OrdersNeedingToBeShipped1>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("orders_needing_to_be_shipped", "test_schema");
+
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.OrderDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.QtyAlreadyShipped).HasColumnName("qty_already_shipped");
+            entity.Property(e => e.QtyOrdered).HasColumnName("qty_ordered");
+            entity.Property(e => e.QtyRemainingToBeShipped).HasColumnName("qty_remaining_to_be_shipped");
+        });
+
+        modelBuilder.Entity<ProfitabilityPerItem>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("profitability_per_item", "warehouse");
+
+            entity.Property(e => e.AvgCostToPurchase).HasColumnName("avg_cost_to_purchase");
+            entity.Property(e => e.AvgRevenuePerSale).HasColumnName("avg_revenue_per_sale");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.ProfitPerUnit).HasColumnName("profit_per_unit");
+            entity.Property(e => e.QtySold).HasColumnName("qty_sold");
+        });
+
+        modelBuilder.Entity<ProfitabilityPerItem1>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("profitability_per_item", "test_schema");
+
+            entity.Property(e => e.AvgCostToPurchase).HasColumnName("avg_cost_to_purchase");
+            entity.Property(e => e.AvgRevenuePerSale).HasColumnName("avg_revenue_per_sale");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.ProfitPerUnit).HasColumnName("profit_per_unit");
+            entity.Property(e => e.QtySold).HasColumnName("qty_sold");
         });
 
         modelBuilder.Entity<PurchaseOrder>(entity =>
@@ -818,6 +1128,7 @@ public partial class Db26TeamoneContext : DbContext
             entity.Property(e => e.Date)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date");
+            entity.Property(e => e.ShippingAddress).HasColumnName("shipping_address");
             entity.Property(e => e.ShippingFee)
                 .HasPrecision(10, 2)
                 .HasColumnName("shipping_fee");
@@ -847,6 +1158,7 @@ public partial class Db26TeamoneContext : DbContext
             entity.Property(e => e.Date)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("date");
+            entity.Property(e => e.ShippingAddress).HasColumnName("shipping_address");
             entity.Property(e => e.ShippingFee)
                 .HasPrecision(10, 2)
                 .HasColumnName("shipping_fee");

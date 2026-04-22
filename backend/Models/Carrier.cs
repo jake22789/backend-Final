@@ -9,7 +9,5 @@ public partial class Carrier
 
     public string? Name { get; set; }
 
-    public decimal? Rate { get; set; }
-
     public virtual ICollection<ShippingContainer1> ShippingContainer1s { get; set; } = new List<ShippingContainer1>();
 }
