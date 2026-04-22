@@ -37,6 +37,33 @@ public class InventoryController : ControllerBase
         }
     }
 
+    [HttpGet("inventory")]
+    public async Task<IActionResult> GetInventory([FromQuery] int? productId)
+    {
+        try
+        {
+            if (productId.HasValue)
+            {
+                if (productId.Value <= 0)
+                {
+                    return BadRequest(new ApiErrorResponseDto { Error = "Product ID must be greater than 0" });
+                }
+
+                var detailedResult = await _inventoryService.GetInventoryByProductAsync(productId.Value);
+                return Ok(detailedResult);
+            }
+            else
+            {
+                var reportResult = await _inventoryService.GetInventoryReportAsync();
+                return Ok(reportResult);
+            }
+        }
+        catch (ApiException ex)
+        {
+            return MapApiException(ex);
+        }
+    }
+
     private IActionResult MapApiException(ApiException ex)
     {
         return ex switch
@@ -46,5 +73,33 @@ public class InventoryController : ControllerBase
             ConflictApiException => Conflict(new ApiErrorResponseDto { Error = ex.Message }),
             _ => BadRequest(new ApiErrorResponseDto { Error = ex.Message })
         };
+    }
+
+    [HttpGet("inventory/on-hand")]
+    public async Task<IActionResult> GetInventoryOnHand()
+    {
+        var result = await _inventoryService.GetInventoryOnHandAsync();
+        return Ok(result);
+    }
+
+    [HttpGet("inventory/items-needing-to-be-shipped")]
+    public async Task<IActionResult> GetItemsNeedingToBeShipped()
+    {
+        var result = await _inventoryService.GetItemsNeedingToBeShippedAsync();
+        return Ok(result);
+    }
+
+    [HttpGet("orders/needing-to-be-shipped")]
+    public async Task<IActionResult> GetOrdersNeedingToBeShipped()
+    {
+        var result = await _inventoryService.GetOrdersNeedingToBeShippedAsync();
+        return Ok(result);
+    }
+
+    [HttpGet("reports/profitability")]
+    public async Task<IActionResult> GetProfitabilityPerItem()
+    {
+        var result = await _inventoryService.GetProfitabilityPerItemAsync();
+        return Ok(result);
     }
 }

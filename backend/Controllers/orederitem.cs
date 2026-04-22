@@ -79,6 +79,25 @@ public class OrdersController : ControllerBase
         }
     }
 
+    [HttpGet("orders/{id}")]
+    public async Task<IActionResult> GetOrderStatus(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest(new ApiErrorResponseDto { Error = "Order ID must be greater than 0" });
+        }
+
+        try
+        {
+            var result = await _orderService.GetOrderStatusAsync(id);
+            return Ok(result);
+        }
+        catch (ApiException ex)
+        {
+            return MapApiException(ex);
+        }
+    }
+
     private IActionResult MapApiException(ApiException ex)
     {
         return ex switch

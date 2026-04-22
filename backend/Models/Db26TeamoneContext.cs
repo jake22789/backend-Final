@@ -21,8 +21,6 @@ public partial class Db26TeamoneContext : DbContext
 
     public virtual DbSet<AppOrderWorkflowState> AppOrderWorkflowStates { get; set; }
 
-    public virtual DbSet<AppUser> AppUsers { get; set; }
-
     public virtual DbSet<Bay> Bays { get; set; }
 
     public virtual DbSet<Bay1> Bays1 { get; set; }

@@ -15,6 +15,8 @@ public interface IOrderWorkflowService
     Task<OrderStateChangeResponseDto> PackOrderAsync(int orderId);
 
     Task<OrderStateChangeResponseDto> ShipOrderAsync(int orderId);
+
+    Task<OrderStatusDto> GetOrderStatusAsync(int orderId);
 }
 
 public class OrderWorkflowService : IOrderWorkflowService
@@ -239,6 +241,54 @@ public class OrderWorkflowService : IOrderWorkflowService
             OrderId = orderId,
             Status = status,
             IdempotentNoOp = false
+        };
+    }
+
+    public async Task<OrderStatusDto> GetOrderStatusAsync(int orderId)
+    {
+        var order = await _context.CustomerOrders
+            .Include(o => o.Customer)
+            .Include(o => o.AppOrderWorkflowState)
+            .Include(o => o.CustomerOrderToItems)
+            .ThenInclude(oi => oi.Item)
+            .FirstOrDefaultAsync(o => o.Id == orderId);
+
+        if (order == null)
+        {
+            throw new NotFoundApiException($"Order with ID {orderId} not found.");
+        }
+
+        var items = order.CustomerOrderToItems
+            .Select(oi => new OrderLineItemDto
+            {
+                Id = oi.Id,
+                ItemId = oi.ItemId ?? 0,
+                ItemName = oi.Item?.ItemName,
+                Quantity = oi.Qty ?? 0,
+                UnitPrice = oi.Price ?? 0
+            })
+            .ToList();
+
+        var subTotal = items.Sum(i => i.LineTotal);
+
+        // Try to find shipment information
+        var shipment = await _context.Shipments
+            .Where(s => s.OrderId == orderId)
+            .FirstOrDefaultAsync();
+
+        return new OrderStatusDto
+        {
+            OrderId = order.Id,
+            CustomerId = order.CustomerId ?? 0,
+            CustomerName = order.Customer?.Name,
+            CreatedDate = order.Date,
+            CurrentStatus = order.AppOrderWorkflowState?.Status ?? "UNKNOWN",
+            StatusUpdatedAt = order.AppOrderWorkflowState?.UpdatedAt,
+            Items = items,
+            SubTotal = subTotal,
+            ShippingFee = order.ShippingFee ?? 0,
+            ShipmentId = shipment?.Id,
+            ShipmentDate = shipment?.DateReceived
         };
     }
 }
